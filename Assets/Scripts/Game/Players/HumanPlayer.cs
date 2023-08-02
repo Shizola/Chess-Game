@@ -25,7 +25,7 @@ namespace Chess.Players
 		Board board;
 		public HumanPlayer(Board board)
 		{
-			boardUI = GameObject.FindObjectOfType<BoardUI>();
+			boardUI = GameObject.FindFirstObjectByType<BoardUI>();
 			cam = Camera.main;
 			this.board = board;
 		}

@@ -23,7 +23,7 @@ namespace Chess.UI
 			gameMoves = PGNLoader.MovesFromPGN(pgn);
 			board = new Board();
 			board.LoadStartPosition();
-			boardUI = FindObjectOfType<BoardUI>();
+			boardUI = FindFirstObjectByType<BoardUI>();
 			boardUI.UpdatePosition(board);
 		}
 

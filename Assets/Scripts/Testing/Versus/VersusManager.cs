@@ -46,7 +46,7 @@ namespace Chess.Testing.Versus
 			gameIndex = -1;
 			UpdateInfoDisplay();
 
-			boardUI = FindObjectOfType<BoardUI>();
+			boardUI = FindFirstObjectByType<BoardUI>();
 			board = new Board();
 			SetUpUI();
 

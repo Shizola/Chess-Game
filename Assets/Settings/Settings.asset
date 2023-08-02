@@ -16,18 +16,18 @@ MonoBehaviour:
   searchTimeMillis: 1000
   fixedSearchDepth: 0
   runOnMainThread: 0
-  useBook: 1
+  useBook: 0
   book: {fileID: 4900000, guid: a8f75ad0d5c0c6248a093ed04a3f3db5, type: 3}
   maxBookPly: 16
   bookMoveDelayMs: 150
   bookMoveDelayRandomExtraMs: 250
   diagnostics:
     numCompletedIterations: 9
-    numPositionsEvaluated: 969419
-    numCutOffs: 907465
+    numPositionsEvaluated: 537073
+    numCutOffs: 514567
     moveVal: 
-    move: e7e5
-    eval: -7
+    move: c8f5
+    eval: 1351
     moveIsFromPartialSearch: 0
     NumQChecks: 0
     numQMates: 0

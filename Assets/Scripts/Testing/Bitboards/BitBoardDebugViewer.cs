@@ -58,8 +58,8 @@ namespace Chess.Testing
 
 		void Start()
 		{
-			gameManager = FindObjectOfType<GameManager>();
-			boardUI = FindObjectOfType<BoardUI>();
+			gameManager = FindFirstObjectByType<GameManager>();
+			boardUI = FindFirstObjectByType<BoardUI>();
 			CreateBoardUI();
 		}
 

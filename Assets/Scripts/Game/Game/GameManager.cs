@@ -62,7 +62,7 @@ namespace Chess.Game
 			clockManager.gameObject.SetActive(useClocks);
 			Application.targetFrameRate = 120;
 
-			boardUI = FindObjectOfType<BoardUI>();
+			boardUI = FindFirstObjectByType<BoardUI>();
 			board = new Board();
 			searchBoard = new Board();
 			aiSettings.diagnostics = new Searcher.SearchDiagnostics();

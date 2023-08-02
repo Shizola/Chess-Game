@@ -22,7 +22,7 @@ namespace Chess.UI
 		void Start()
 		{
 			activeArrows = new List<Transform>();
-			boardUI = FindObjectOfType<BoardUI>();
+			boardUI = FindFirstObjectByType<BoardUI>();
 			cam = Camera.main;
 		}
 
