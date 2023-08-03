@@ -1,6 +1,7 @@
 ﻿namespace Chess.Core
 {
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using static System.Math;
 
 	public class Searcher
@@ -103,6 +104,9 @@
 			{
 				bestMove = GetRandomMove();
 			}
+
+			find a way to get list of moves here and pick from them
+            
 			onSearchComplete?.Invoke(bestMove);
 			searchCancelled = false;
 		}
@@ -168,7 +172,7 @@
 
 		void DoFixedDepthSearch()
 		{
-			Search(settings.FixedSearchDepth, 0, negativeInfinity, positiveInfinity);
+            Search(settings.FixedSearchDepth, 0, negativeInfinity, positiveInfinity);
 			bestMove = bestMoveThisIteration;
 			bestEval = bestEvalThisIteration;
 		}

@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea222b713a9e459caf3ca327745aa40, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
-  mode: 0
+  mode: 1
   searchTimeMillis: 1000
-  fixedSearchDepth: 0
+  fixedSearchDepth: 1
   runOnMainThread: 0
   useBook: 0
   book: {fileID: 4900000, guid: a8f75ad0d5c0c6248a093ed04a3f3db5, type: 3}
@@ -22,12 +22,12 @@ MonoBehaviour:
   bookMoveDelayMs: 150
   bookMoveDelayRandomExtraMs: 250
   diagnostics:
-    numCompletedIterations: 9
-    numPositionsEvaluated: 537073
-    numCutOffs: 514567
+    numCompletedIterations: 0
+    numPositionsEvaluated: 2
+    numCutOffs: 1
     moveVal: 
-    move: c8f5
-    eval: 1351
+    move: 
+    eval: 0
     moveIsFromPartialSearch: 0
     NumQChecks: 0
     numQMates: 0

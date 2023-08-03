@@ -137,7 +137,7 @@
 
 		SearchSettings CreateSearchSettings(AISettings aISettings)
 		{
-			return new SearchSettings();
+			return new SearchSettings(aISettings.mode, aISettings.fixedSearchDepth);
 		}
 		void OnSearchComplete(Move move)
 		{
