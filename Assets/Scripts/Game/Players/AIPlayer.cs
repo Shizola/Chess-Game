@@ -1,5 +1,6 @@
 ﻿namespace Chess.Players
 {
+	using System.Collections.Generic;
 	using System.Threading.Tasks;
 	using System.Threading;
 	using Chess.Core;
@@ -19,6 +20,8 @@
 
 		OpeningBook book;
 
+		public List<Move> availableMoves = new List<Move>();
+
 		public AIPlayer(Board board, AISettings settings)
 		{
 			this.settings = settings;
@@ -28,12 +31,14 @@
 
 			search = new Searcher(board, CreateSearchSettings(settings));
 			search.onSearchComplete += OnSearchComplete;
+			search.OnSearchCompleteAllMoves += OnSearchCompleteAllMoves;
 			search.searchDiagnostics = new Searcher.SearchDiagnostics();
 
 			if (settings.useBook)
 			{
 				book = new OpeningBook(settings.book.text);
 			}
+
 		}
 
 		// Update running on Unity main thread. This is used to return the chosen move so as
@@ -144,7 +149,20 @@
 			// Cancel search timer in case search finished before timer ran out (can happen when a mate is found)
 			cancelSearchTimer?.Cancel();
 			moveFound = true;
-			this.move = move;
+			
+			//this.move = move;
+
+			Debug.Log("Search complete: " + move.TargetSquare);
+		}
+
+		void OnSearchCompleteAllMoves(List<Move> moves)
+		{
+			availableMoves = moves;
+			//Debug.Log("Available moves: " + moves.Count);
+			Debug.Log(availableMoves[0].TargetSquare);
+			Debug.Log(availableMoves[availableMoves.Count - 1].TargetSquare);
+
+			this.move = availableMoves[availableMoves.Count - 1];
 		}
 	}
 }

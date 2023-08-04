@@ -3,6 +3,8 @@
 	using System.Collections.Generic;
 	using System.Diagnostics;
 	using static System.Math;
+	using UnityEngine;
+	using UnityEditor;
 
 	public class Searcher
 	{
@@ -16,6 +18,7 @@
 
 		// Callbacks
 		public event System.Action<Move> onSearchComplete;
+		public event System.Action<List<Move>> OnSearchCompleteAllMoves;
 
 		// Settings
 		SearchSettings settings;
@@ -41,6 +44,8 @@
 		bool hasSearchedAtLeastOneMove;
 		bool searchCancelled;
 
+		public List<Move> currentMoves = new();
+
 		// Diagnostics
 		public SearchDiagnostics searchDiagnostics;
 		int currentIterationDepth;
@@ -63,8 +68,11 @@
 
 			// Run a depth 1 search so that JIT doesn't run during actual search (and mess up timing stats in editor)
 			Search(1, 0, negativeInfinity, positiveInfinity);
+
+			EditorApplication.playModeStateChanged += LogPlayModeState;
 		}
 
+				
 		public void StartSearch()
 		{
 			// Initialize search
@@ -77,7 +85,7 @@
 			moveOrderer.ClearHistory();
 			repetitionTable.Init(board.RepetitionPositionHistory.ToArray());
 
-
+		
 
 			// Initialize debug info
 			CurrentDepth = 0;
@@ -105,9 +113,11 @@
 				bestMove = GetRandomMove();
 			}
 
-			find a way to get list of moves here and pick from them
+		//	find a way to get list of moves here and pick from them
             
 			onSearchComplete?.Invoke(bestMove);
+			OnSearchCompleteAllMoves?.Invoke(currentMoves);
+
 			searchCancelled = false;
 		}
 
@@ -375,6 +385,14 @@
 
 			transpositionTable.StoreEvaluation(plyRemaining, plyFromRoot, alpha, evaluationBound, bestMoveInThisPosition);
 
+			currentMoves.Clear();
+
+			for (int i = 0; i < moves.Length; i++)
+			{
+				currentMoves.Add(moves[i]);
+			}
+
+
 			return alpha;
 
 		}
@@ -492,5 +510,13 @@
 			public int maxExtentionReachedInSearch;
 		}
 
+		private void LogPlayModeState(PlayModeStateChange state)
+		{
+			if(state == PlayModeStateChange.ExitingPlayMode)
+			{
+				UnityEngine.Debug.Log("exiting play mode, disposing searcher");
+				EndSearch();
+			}
+		}		
 	}
 }

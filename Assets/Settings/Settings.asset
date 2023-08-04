@@ -23,8 +23,8 @@ MonoBehaviour:
   bookMoveDelayRandomExtraMs: 250
   diagnostics:
     numCompletedIterations: 0
-    numPositionsEvaluated: 2
-    numCutOffs: 1
+    numPositionsEvaluated: 5
+    numCutOffs: 2
     moveVal: 
     move: 
     eval: 0
