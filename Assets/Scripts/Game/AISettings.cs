@@ -9,6 +9,9 @@
 
 		public event System.Action requestCancelSearch;
 
+		[Range(1, 10)]
+		public int difficultyLevel = 5;
+
 		[Header("Search")]
 		public SearchSettings.SearchMode mode;
 		public int searchTimeMillis = 1000;

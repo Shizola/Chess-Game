@@ -6,6 +6,7 @@
 	using Chess.Core;
 	using Chess.Game;
 	using UnityEngine;
+	using System;
 
 	public class AIPlayer : Player
 	{
@@ -31,7 +32,7 @@
 
 			search = new Searcher(board, CreateSearchSettings(settings));
 			search.onSearchComplete += OnSearchComplete;
-			search.OnSearchCompleteAllMoves += OnSearchCompleteAllMoves;
+			//search.OnSearchCompleteAllMoves += OnSearchCompleteAllMoves;
 			search.searchDiagnostics = new Searcher.SearchDiagnostics();
 
 			if (settings.useBook)
@@ -144,25 +145,64 @@
 		{
 			return new SearchSettings(aISettings.mode, aISettings.fixedSearchDepth);
 		}
+
+		//legacy
 		void OnSearchComplete(Move move)
 		{
 			// Cancel search timer in case search finished before timer ran out (can happen when a mate is found)
 			cancelSearchTimer?.Cancel();
 			moveFound = true;
-			
-			//this.move = move;
+
+			this.move = move;
 
 			Debug.Log("Search complete: " + move.TargetSquare);
 		}
 
 		void OnSearchCompleteAllMoves(List<Move> moves)
 		{
-			availableMoves = moves;
-			//Debug.Log("Available moves: " + moves.Count);
-			Debug.Log(availableMoves[0].TargetSquare);
-			Debug.Log(availableMoves[availableMoves.Count - 1].TargetSquare);
+			// Cancel search timer in case search finished before timer ran out (can happen when a mate is found)
 
-			this.move = availableMoves[availableMoves.Count - 1];
+			cancelSearchTimer?.Cancel();
+			moveFound = true;
+
+			availableMoves = moves;
+
+			for (int i = 0; i < availableMoves.Count; i++)
+			{
+				//Debug.Log("Search complete: " + availableMoves[i].TargetSquare);
+			}
+
+			this.move= moves[0];
+			// make a method to choose the best move
+			//this.move = ReturnMoveBasedOnDifficulty();
+		}
+
+		private Move ReturnMoveBasedOnDifficulty()
+		{
+			return availableMoves[0];
+
+
+			// if (settings.difficultyLevel < 1 || settings.difficultyLevel > 10)
+			// {
+			// 	throw new ArgumentException("Difficulty level must be between 1 and 10.");
+			// }
+
+			// int totalCount = availableMoves.Count;
+
+			// if (settings.difficultyLevel == 10)
+			// {
+			// 	return availableMoves[0];
+			// }
+			// else
+			// {
+			// 	int startIndex = 0;
+			// 	int endIndex = (int)Math.Ceiling(totalCount * (settings.difficultyLevel / 10.0));
+			// 	endIndex = Math.Min(endIndex, totalCount);
+
+			// 	int randomIndex = UnityEngine.Random.Range(startIndex, endIndex + 1);
+
+			// 	return availableMoves[randomIndex];
+			// }
 		}
 	}
 }

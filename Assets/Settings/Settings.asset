@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ea222b713a9e459caf3ca327745aa40, type: 3}
   m_Name: Settings
   m_EditorClassIdentifier: 
-  mode: 1
+  difficultyLevel: 10
+  mode: 0
   searchTimeMillis: 1000
   fixedSearchDepth: 1
   runOnMainThread: 0
@@ -23,8 +24,8 @@ MonoBehaviour:
   bookMoveDelayRandomExtraMs: 250
   diagnostics:
     numCompletedIterations: 0
-    numPositionsEvaluated: 5
-    numCutOffs: 2
+    numPositionsEvaluated: 0
+    numCutOffs: 0
     moveVal: 
     move: 
     eval: 0

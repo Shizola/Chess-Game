@@ -17,8 +17,9 @@
 		const int negativeInfinity = -positiveInfinity;
 
 		// Callbacks
+		//legacy
 		public event System.Action<Move> onSearchComplete;
-		public event System.Action<List<Move>> OnSearchCompleteAllMoves;
+		//public event System.Action<List<Move>> OnSearchCompleteAllMoves;
 
 		// Settings
 		SearchSettings settings;
@@ -95,6 +96,9 @@
 			searchIterationTimer = new System.Diagnostics.Stopwatch();
 			searchTotalTimer = System.Diagnostics.Stopwatch.StartNew();
 
+
+			currentMoves.Clear();
+
 			// Run search
 			if (settings.Mode == SearchSettings.SearchMode.IterativeDeepening)
 			{
@@ -107,16 +111,31 @@
 
 			// Finish up
 
+
+
 			// In the very unlikely event that the search is cancelled before a best move can be found, pick a random move
 			if (bestMove.IsNull)
 			{
 				bestMove = GetRandomMove();
 			}
 
-		//	find a way to get list of moves here and pick from them
-            
+
+            //	find a way to get list of moves here and pick from them
+            // UnityEngine.Debug.Log((currentMoves.Count).ToString() + " moves found");
+
+			// System.Span<Move> currentMoveSpan = currentMoves.ToArray();	
+            // UnityEngine.Debug.Log(currentMoveSpan.Length);
+			
+
+			// moveOrderer.OrderMoves(bestMove, board, currentMoveSpan, moveGenerator.opponentAttackMap, moveGenerator.opponentPawnAttackMap, false, 0);
+
+			
+
+			// bestMove = currentMoveSpan[0];			
+			
 			onSearchComplete?.Invoke(bestMove);
-			OnSearchCompleteAllMoves?.Invoke(currentMoves);
+			//
+			//OnSearchCompleteAllMoves?.Invoke(currentMoves);
 
 			searchCancelled = false;
 		}
@@ -385,13 +404,11 @@
 
 			transpositionTable.StoreEvaluation(plyRemaining, plyFromRoot, alpha, evaluationBound, bestMoveInThisPosition);
 
-			currentMoves.Clear();
-
+			
 			for (int i = 0; i < moves.Length; i++)
 			{
-				currentMoves.Add(moves[i]);
+				currentMoves.Add(moves[i]);                
 			}
-
 
 			return alpha;
 
@@ -515,7 +532,7 @@
 			if(state == PlayModeStateChange.ExitingPlayMode)
 			{
 				UnityEngine.Debug.Log("exiting play mode, disposing searcher");
-				EndSearch();
+				//EndSearch();
 			}
 		}		
 	}

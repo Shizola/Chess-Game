@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace Chess.Core
@@ -56,6 +56,7 @@ namespace Chess.Core
 
 		public void OrderMoves(Move hashMove, Board board, System.Span<Move> moves, ulong oppAttacks, ulong oppPawnAttacks, bool inQSearch, int ply)
 		{
+			
 			//Move hashMove = inQSearch ? invalidMove : transpositionTable.GetStoredMove();
 
 
