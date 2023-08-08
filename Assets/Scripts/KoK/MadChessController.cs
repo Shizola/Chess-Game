@@ -3,6 +3,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using Chess.Core;
 using UnityEngine;
 
 public class MadChessController : MonoBehaviour
@@ -14,9 +15,10 @@ public class MadChessController : MonoBehaviour
 
     public string madChessExePath; // Set this in the Inspector to the name of your .exe file
 
-
     public event Action onUCIok;
     public event Action onIsReady;
+
+    public Action<string> onSearchComplete;
 
     void Start()
     {
@@ -100,9 +102,10 @@ public class MadChessController : MonoBehaviour
             {
                 // The engine has responded with the best move it has found
                 // Parse the response to get the best move
-                // string[] bestMoveSplit = data.Split(' ');
-                // string bestMove = bestMoveSplit[1];
-                // UnityEngine.Debug.Log("Best move: " + bestMove);
+                string[] bestMoveSplit = data.Split(' ');
+                string bestMove = bestMoveSplit[1];
+                UnityEngine.Debug.Log("Best move: " + bestMove);
+                onSearchComplete?.Invoke(bestMove);
             }
         }
     }
@@ -127,22 +130,15 @@ public class MadChessController : MonoBehaviour
         SendCommand("uci");
         UnityEngine.Debug.Log("check uci");
     }
-
+   
     public void NewGame()
     {
         SendCommand("ucinewgame");
     }
-
+    
     public void CheckIsReady()
     {
         SendCommand("isready");
-    }
-
-    // You can call this method to make the engine calculate the best move
-    public void CalculateBestMove()
-    {
-        SendCommand("position startpos");
-        SendCommand("go depth 10"); // Change the search depth as needed
     }
 
     // Make sure to clean up when the application closes or when you don't need the engine anymore
@@ -159,5 +155,13 @@ public class MadChessController : MonoBehaviour
         {
             readThread.Join();
         }
+    }
+
+    public void SendPosition(string fen)
+    {
+        SendCommand("setoption UCI_LimitStrength true");
+        SendCommand("setoption UCI_Elo 1000");
+        SendCommand("position fen " + fen);
+        SendCommand("go depth 2");
     }
 }

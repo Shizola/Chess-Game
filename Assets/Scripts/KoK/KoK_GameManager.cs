@@ -79,7 +79,8 @@ public class KoK_GameManager : MonoBehaviour
 
     IEnumerator StartUCICheck()
     {
-        yield return new WaitForSeconds(1f);
+        // yield end of frame to allow UCI to be ready;
+        yield return new WaitForEndOfFrame();
         _madChessController.CheckUCI();
     }
 
@@ -96,7 +97,7 @@ public class KoK_GameManager : MonoBehaviour
         }
         else
         {
-            player = new KoK_AI_Player(board);
+            player = new KoK_AI_Player(board, _madChessController);
         }
         player.onMoveChosen += OnMoveChosen;
     }
@@ -114,7 +115,7 @@ public class KoK_GameManager : MonoBehaviour
         currentFen = FenUtility.CurrentFen(board);
         onMoveMade?.Invoke(move);
 
-        _boardUI.UpdatePosition(board, move, true);
+        _boardUI.UpdatePosition(board, move, false);
 
         NotifyPlayerToMove();
     }
