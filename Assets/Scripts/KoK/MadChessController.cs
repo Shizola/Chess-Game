@@ -64,7 +64,7 @@ public class MadChessController : MonoBehaviour
             readThread = new Thread(ReadEngineOutput);
             readThread.Start();
 
-            
+
             // CalculateBestMove();
         }
         else
@@ -78,8 +78,12 @@ public class MadChessController : MonoBehaviour
         while (!engineStreamReader.EndOfStream)
         {
             string data = engineStreamReader.ReadLine();
-            // Handle the engine's response here
-            UnityEngine.Debug.Log("Engine Response: " + data);
+            // Handle the engine's response here           
+
+            if (data != "")
+            {
+                UnityEngine.Debug.Log("Engine Response: " + data);
+            }
 
             // For example, the engine will respond with "uciok" to the "uci" command
             if (data == "uciok")
@@ -130,12 +134,17 @@ public class MadChessController : MonoBehaviour
         SendCommand("uci");
         UnityEngine.Debug.Log("check uci");
     }
-   
+
     public void NewGame()
     {
+        SendCommand("setoption name uci_limitstrength value true");
+        SendCommand("setoption name uci_elo value 600");
+        
         SendCommand("ucinewgame");
+
+          
     }
-    
+
     public void CheckIsReady()
     {
         SendCommand("isready");
@@ -159,9 +168,9 @@ public class MadChessController : MonoBehaviour
 
     public void SendPosition(string fen)
     {
-        SendCommand("setoption UCI_LimitStrength true");
-        SendCommand("setoption UCI_Elo 1000");
+         SendCommand("setoption name uci_limitstrength value true");
+        SendCommand("setoption name uci_elo value 600");
         SendCommand("position fen " + fen);
-        SendCommand("go depth 2");
+        SendCommand("go depth 4");
     }
 }
