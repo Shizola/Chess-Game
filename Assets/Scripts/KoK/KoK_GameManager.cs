@@ -191,8 +191,7 @@ public class KoK_GameManager : MonoBehaviour
             _playerToMove.Update();
         }
     }
-
-
+    
     private void OnUCIok()
     {
         Debug.Log("UCI is ready");
@@ -203,6 +202,10 @@ public class KoK_GameManager : MonoBehaviour
     private void OnMadChessIsReady()
     {
         Debug.Log("MadChess is ready");
+
+        if(loadCustomPosition)
+            _madChessController.SendCommand("position fen " + customPosition);
+
         NotifyPlayerToMove();
         gameResult = GameResult.Result.Playing;
     }

@@ -63,9 +63,6 @@ public class MadChessController : MonoBehaviour
             // Start reading asynchronously from the engine's output using a separate thread
             readThread = new Thread(ReadEngineOutput);
             readThread.Start();
-
-
-            // CalculateBestMove();
         }
         else
         {
@@ -108,8 +105,13 @@ public class MadChessController : MonoBehaviour
                 // Parse the response to get the best move
                 string[] bestMoveSplit = data.Split(' ');
                 string bestMove = bestMoveSplit[1];
-                UnityEngine.Debug.Log("Best move: " + bestMove);
                 onSearchComplete?.Invoke(bestMove);
+            }
+            else if (data.StartsWith("info depth"))
+            {
+                // The engine has provided an "info depth" response
+                // Extract and display the evaluation score if available
+                ExtractAndDisplayEvaluation(data);
             }
         }
     }
@@ -132,17 +134,16 @@ public class MadChessController : MonoBehaviour
     {
         // Send the 'uci' command to identify the engine
         SendCommand("uci");
+        
         UnityEngine.Debug.Log("check uci");
     }
 
     public void NewGame()
     {
+        //SendCommand("debug on");
         SendCommand("setoption name uci_limitstrength value true");
         SendCommand("setoption name uci_elo value 600");
-        
-        SendCommand("ucinewgame");
-
-          
+        SendCommand("ucinewgame");          
     }
 
     public void CheckIsReady()
@@ -167,10 +168,43 @@ public class MadChessController : MonoBehaviour
     }
 
     public void SendPosition(string fen)
-    {
-         SendCommand("setoption name uci_limitstrength value true");
-        SendCommand("setoption name uci_elo value 600");
+    {        
         SendCommand("position fen " + fen);
-        SendCommand("go depth 4");
+
+     //   SendCommand("setoption name uci_limitstrength value true");
+      //  SendCommand("setoption name uci_elo value 600");
+
+        // SendCommand("position fen 1rbq1r1k/2pp2pp/p1n3p1/2b1p3/R3P3/1BP2N2/1P3PPP/1NBQ1RK1 w - - 0 1");
+        SendCommand("go depth 1");
     }
+
+
+    //temp
+    // Method to extract and display the evaluation score
+    private void ExtractAndDisplayEvaluation(string infoDepthResponse)
+    {
+        // Check if the response contains the "score cp" information
+        if (infoDepthResponse.Contains("score cp"))
+        {
+            // Split the response into tokens
+            string[] tokens = infoDepthResponse.Split(' ');
+
+            // Find the index of the "score" token
+            int scoreIndex = Array.IndexOf(tokens, "score");
+
+            if (scoreIndex != -1 && scoreIndex + 2 < tokens.Length)
+            {
+                // Extract the score value (in centipawns)
+                int cpScore = int.Parse(tokens[scoreIndex + 2]);
+
+                // Convert the centipawn score to a traditional evaluation score
+                float evaluationScore = cpScore / 100.0f;
+
+                // Display the traditional evaluation score
+                string formattedScore = evaluationScore.ToString("+#0.0;-#0.0;0");
+                UnityEngine.Debug.Log("Evaluation Score: " + formattedScore);
+            }
+        }
+    }
+
 }

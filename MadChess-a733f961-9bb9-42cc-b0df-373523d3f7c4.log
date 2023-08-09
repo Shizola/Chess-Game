@@ -1,0 +1,11 @@
+00:00:00.361   Out  Exception Message = Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+
+Exception Type = System.ArgumentOutOfRangeException.
+
+Exception StackTrace =    at System.Collections.Generic.List`1.get_Item(Int32)
+   at ErikTheCoder.MadChess.Engine.UciStream.SetOption(List`1)
+   at ErikTheCoder.MadChess.Engine.UciStream.DispatchOnMainThread(List`1)
+   at ErikTheCoder.MadChess.Engine.UciStream.DispatchCommand(String)
+   at ErikTheCoder.MadChess.Engine.UciStream.MonitorInputStream()
+
+

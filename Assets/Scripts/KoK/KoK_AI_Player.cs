@@ -22,13 +22,11 @@ namespace Chess.Players
             _madChessController.onSearchComplete += OnSearchComplete;
         }
 
-
         public override void NotifyTurnToMove()
         {
             Debug.Log("AI Player's turn to move");
 
             _madChessController.SendPosition(FenUtility.CurrentFen(_board));
-
         }
 
         public override void Update()

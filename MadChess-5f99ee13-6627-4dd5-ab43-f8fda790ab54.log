@@ -1,0 +1,15 @@
+00:00:03.980   Out  info depth 1 seldepth 3 time 74 nodes 47 score cp 31 nps 631 pv g8f6
+00:00:03.984   Out  info hashfull 0 currmove b8a6 currmovenumber 20
+00:00:03.984   Out  bestmove g8f6
+00:00:03.985   Out  
+00:00:04.023   Out  Exception Message = Index was out of range. Must be non-negative and less than the size of the collection. (Parameter 'index')
+
+Exception Type = System.ArgumentOutOfRangeException.
+
+Exception StackTrace =    at System.Collections.Generic.List`1.get_Item(Int32)
+   at ErikTheCoder.MadChess.Engine.UciStream.SetOption(List`1)
+   at ErikTheCoder.MadChess.Engine.UciStream.DispatchOnMainThread(List`1)
+   at ErikTheCoder.MadChess.Engine.UciStream.DispatchCommand(String)
+   at ErikTheCoder.MadChess.Engine.UciStream.MonitorInputStream()
+
+
