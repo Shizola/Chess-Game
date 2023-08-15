@@ -23,7 +23,6 @@ namespace Chess.UI
 		{
 			moveGenerator = new MoveGenerator();
 			CreateBoardUI();
-
 		}
 
 		public void UpdatePosition(Board board, Move move, bool animate = false)

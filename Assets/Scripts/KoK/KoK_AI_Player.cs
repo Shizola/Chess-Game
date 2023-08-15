@@ -26,7 +26,7 @@ namespace Chess.Players
         {
             Debug.Log("AI Player's turn to move");
 
-            _madChessController.SendPosition(FenUtility.CurrentFen(_board));
+            _madChessController.SendPosition(FenUtility.CurrentFen(_board), 4);
         }
 
         public override void Update()

@@ -133,8 +133,7 @@ public class MadChessController : MonoBehaviour
     public void CheckUCI()
     {
         // Send the 'uci' command to identify the engine
-        SendCommand("uci");
-        
+        SendCommand("uci");        
         UnityEngine.Debug.Log("check uci");
     }
 
@@ -167,15 +166,11 @@ public class MadChessController : MonoBehaviour
         }
     }
 
-    public void SendPosition(string fen)
-    {        
+    public void SendPosition(string fen, int moveTime)
+    {   
+        moveTime *= 100;
         SendCommand("position fen " + fen);
-
-     //   SendCommand("setoption name uci_limitstrength value true");
-      //  SendCommand("setoption name uci_elo value 600");
-
-        // SendCommand("position fen 1rbq1r1k/2pp2pp/p1n3p1/2b1p3/R3P3/1BP2N2/1P3PPP/1NBQ1RK1 w - - 0 1");
-        SendCommand("go depth 1");
+        SendCommand("go movetime " + moveTime.ToString());
     }
 
 
@@ -202,7 +197,7 @@ public class MadChessController : MonoBehaviour
 
                 // Display the traditional evaluation score
                 string formattedScore = evaluationScore.ToString("+#0.0;-#0.0;0");
-                UnityEngine.Debug.Log("Evaluation Score: " + formattedScore);
+                //UnityEngine.Debug.Log("Evaluation Score: " + formattedScore);
             }
         }
     }

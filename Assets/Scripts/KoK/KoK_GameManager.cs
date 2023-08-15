@@ -115,7 +115,7 @@ public class KoK_GameManager : MonoBehaviour
         currentFen = FenUtility.CurrentFen(board);
         onMoveMade?.Invoke(move);
 
-        _boardUI.UpdatePosition(board, move, false);
+        _boardUI.UpdatePosition(board, move, true);
 
         NotifyPlayerToMove();
     }
