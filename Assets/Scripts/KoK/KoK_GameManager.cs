@@ -24,6 +24,8 @@ public class KoK_GameManager : MonoBehaviour
     public PlayerType whitePlayerType = PlayerType.Human;
     public PlayerType blackPlayerType = PlayerType.AI;
 
+    public KoK_WorldKingAttributes opponentKingAttributes;
+
     private Player _humanPlayer;
     private Player _aiPlayer;
     private Player _playerToMove;
@@ -195,7 +197,7 @@ public class KoK_GameManager : MonoBehaviour
     private void OnUCIok()
     {
         Debug.Log("UCI is ready");
-        _madChessController.NewGame();
+        _madChessController.NewGame(opponentKingAttributes.skillElo);
         _madChessController.CheckIsReady();
     }
 

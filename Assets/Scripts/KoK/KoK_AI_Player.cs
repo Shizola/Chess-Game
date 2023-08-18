@@ -13,7 +13,7 @@ namespace Chess.Players
         private MadChessController _madChessController;
         private Board _board;
         private Move _move;
-        private bool _moveFound;
+        private bool _moveFound;      
 
         public KoK_AI_Player(Board board, MadChessController madChessController)
         {
@@ -24,9 +24,13 @@ namespace Chess.Players
 
         public override void NotifyTurnToMove()
         {
-            Debug.Log("AI Player's turn to move");
+            Debug.Log("AI Player's turn to move");           
 
-            _madChessController.SendPosition(FenUtility.CurrentFen(_board), 4);
+            //random move time between 1 and 3 seconds
+            float moveTime = Random.Range(100, 300);
+            // change this based on king stats
+
+            _madChessController.SendPosition(FenUtility.CurrentFen(_board), moveTime);
         }
 
         public override void Update()

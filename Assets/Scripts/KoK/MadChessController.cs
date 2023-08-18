@@ -1,10 +1,12 @@
 
 using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Chess.Core;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class MadChessController : MonoBehaviour
 {
@@ -19,6 +21,13 @@ public class MadChessController : MonoBehaviour
     public event Action onIsReady;
 
     public Action<string> onSearchComplete;
+
+    public int centipawnScore;
+    public int currentOpponentSkillElo;
+
+    // private WaitForSeconds _waitOneSecond = new WaitForSeconds(1f);
+    public float moveTimer = 0f;
+    public bool isThinking = false;
 
     void Start()
     {
@@ -42,7 +51,6 @@ public class MadChessController : MonoBehaviour
             LaunchUCIEngine(exeFilePath);
         }
     }
-
 
     private void LaunchUCIEngine(string enginePath)
     {
@@ -106,6 +114,10 @@ public class MadChessController : MonoBehaviour
                 string[] bestMoveSplit = data.Split(' ');
                 string bestMove = bestMoveSplit[1];
                 onSearchComplete?.Invoke(bestMove);
+                isThinking = false;
+                UnityEngine.Debug.Log(moveTimer);
+                
+
             }
             else if (data.StartsWith("info depth"))
             {
@@ -133,16 +145,20 @@ public class MadChessController : MonoBehaviour
     public void CheckUCI()
     {
         // Send the 'uci' command to identify the engine
-        SendCommand("uci");        
+        SendCommand("uci");
         UnityEngine.Debug.Log("check uci");
     }
 
-    public void NewGame()
+    public void NewGame(int skillElo)
     {
-        //SendCommand("debug on");
+        currentOpponentSkillElo = skillElo;
+
+        UnityEngine.Debug.Log(currentOpponentSkillElo.ToString());
+
+        SendCommand("debug on");
         SendCommand("setoption name uci_limitstrength value true");
-        SendCommand("setoption name uci_elo value 600");
-        SendCommand("ucinewgame");          
+        SendCommand("setoption name uci_elo value " + currentOpponentSkillElo.ToString());
+        SendCommand("ucinewgame");
     }
 
     public void CheckIsReady()
@@ -166,11 +182,36 @@ public class MadChessController : MonoBehaviour
         }
     }
 
-    public void SendPosition(string fen, int moveTime)
-    {   
-        moveTime *= 100;
+    public void SendPosition(string fen, float moveTime)
+    {
         SendCommand("position fen " + fen);
-        SendCommand("go movetime " + moveTime.ToString());
+
+       SendCommand("go nodes 1");
+
+      //  SendCommand("stop");
+      moveTimer = 0f;
+      isThinking = true;
+      StartCoroutine(TimeMove());
+
+    }
+
+    private void Update()
+    {
+        // use unity new input system to detect spacebar press
+        if (Keyboard.current.spaceKey.wasPressedThisFrame)
+        {
+            
+               UnityEngine.Debug.Log("??");
+        }
+    }
+
+    private IEnumerator TimeMove()
+    {
+        while(isThinking)
+        {
+            moveTimer += Time.deltaTime;
+            yield return null;
+        }
     }
 
 
@@ -190,13 +231,13 @@ public class MadChessController : MonoBehaviour
             if (scoreIndex != -1 && scoreIndex + 2 < tokens.Length)
             {
                 // Extract the score value (in centipawns)
-                int cpScore = int.Parse(tokens[scoreIndex + 2]);
+                centipawnScore = int.Parse(tokens[scoreIndex + 2]);
 
                 // Convert the centipawn score to a traditional evaluation score
-                float evaluationScore = cpScore / 100.0f;
+                // float evaluationScore = cpScore / 100.0f;
 
                 // Display the traditional evaluation score
-                string formattedScore = evaluationScore.ToString("+#0.0;-#0.0;0");
+                // string formattedScore = evaluationScore.ToString("+#0.0;-#0.0;0");
                 //UnityEngine.Debug.Log("Evaluation Score: " + formattedScore);
             }
         }

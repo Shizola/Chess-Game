@@ -1136,6 +1136,8 @@ MonoBehaviour:
   customPosition: rnbqkbnr/pppppppp/8/3p4/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
   whitePlayerType: 0
   blackPlayerType: 1
+  opponentKingAttributes: {fileID: 11400000, guid: fd12a6b40280419418dab4cfd6bbe8c7,
+    type: 2}
   currentFen: 
 --- !u!4 &1688005262
 Transform:
@@ -1316,6 +1318,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   madChessExePath: MadChess/x64/MadChess.Engine.exe
+  centipawnScore: 0
+  currentOpponentSkillElo: 0
 --- !u!4 &2015979716
 Transform:
   m_ObjectHideFlags: 0
