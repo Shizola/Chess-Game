@@ -9,7 +9,6 @@ namespace Chess.Players
 {
 	public class HumanPlayer : Player
 	{
-
 		public enum InputState
 		{
 			None,
@@ -17,33 +16,36 @@ namespace Chess.Players
 			DraggingPiece
 		}
 
-		InputState currentState;
+		private InputState currentState;
 
-		BoardUI boardUI;
-		Camera cam;
-		Coord selectedPieceSquare;
-		Board board;
+		private BoardUI _boardUI;
+		private Camera _cam;
+		private Coord _selectedPieceSquare;
+		private Board _board;
+
+
 		public HumanPlayer(Board board)
 		{
-			boardUI = GameObject.FindFirstObjectByType<BoardUI>();
-			cam = Camera.main;
-			this.board = board;
+			_boardUI = GameObject.FindFirstObjectByType<BoardUI>();
+			_cam = Camera.main;
+			this._board = board;
 		}
 
 		public override void NotifyTurnToMove()
 		{
-
+			_thinkingTime = 0f;
 		}
 
 		public override void Update()
 		{
+			_thinkingTime += Time.deltaTime;
 			HandleInput();
 		}
 
 		void HandleInput()
 		{
 			Mouse mouse = Mouse.current;
-			Vector2 mousePos = cam.ScreenToWorldPoint(mouse.position.ReadValue());
+			Vector2 mousePos = _cam.ScreenToWorldPoint(mouse.position.ReadValue());
 
 			if (currentState == InputState.None)
 			{
@@ -74,7 +76,7 @@ namespace Chess.Players
 
 		void HandleDragMovement(Vector2 mousePos)
 		{
-			boardUI.DragPiece(selectedPieceSquare, mousePos);
+			_boardUI.DragPiece(_selectedPieceSquare, mousePos);
 			// If mouse is released, then try place the piece
 			if (Mouse.current.leftButton.wasReleasedThisFrame)
 			{
@@ -85,11 +87,11 @@ namespace Chess.Players
 		void HandlePiecePlacement(Vector2 mousePos)
 		{
 			Coord targetSquare;
-			if (boardUI.TryGetCoordFromPosition(mousePos, out targetSquare))
+			if (_boardUI.TryGetCoordFromPosition(mousePos, out targetSquare))
 			{
-				if (targetSquare.Equals(selectedPieceSquare))
+				if (targetSquare.Equals(_selectedPieceSquare))
 				{
-					boardUI.ResetPiecePosition(selectedPieceSquare);
+					_boardUI.ResetPiecePosition(_selectedPieceSquare);
 					if (currentState == InputState.DraggingPiece)
 					{
 						currentState = InputState.PieceSelected;
@@ -97,21 +99,21 @@ namespace Chess.Players
 					else
 					{
 						currentState = InputState.None;
-						boardUI.ResetSquareColours();
-						boardUI.HighlightLastMadeMoveSquares(board);
+						_boardUI.ResetSquareColours();
+						_boardUI.HighlightLastMadeMoveSquares(_board);
 					}
 				}
 				else
 				{
 					int targetIndex = BoardHelper.IndexFromCoord(targetSquare.fileIndex, targetSquare.rankIndex);
-					if (Piece.IsColour(board.Square[targetIndex], board.MoveColour) && board.Square[targetIndex] != 0)
+					if (Piece.IsColour(_board.Square[targetIndex], _board.MoveColour) && _board.Square[targetIndex] != 0)
 					{
 						CancelPieceSelection();
 						HandlePieceSelection(mousePos);
 					}
 					else
 					{
-						TryMakeMove(selectedPieceSquare, targetSquare);
+						TryMakeMove(_selectedPieceSquare, targetSquare);
 					}
 				}
 			}
@@ -127,9 +129,9 @@ namespace Chess.Players
 			if (currentState != InputState.None)
 			{
 				currentState = InputState.None;
-				boardUI.ResetSquareColours();
-				boardUI.HighlightLastMadeMoveSquares(board);
-				boardUI.ResetPiecePosition(selectedPieceSquare);
+				_boardUI.ResetSquareColours();
+				_boardUI.HighlightLastMadeMoveSquares(_board);
+				_boardUI.ResetPiecePosition(_selectedPieceSquare);
 			}
 		}
 
@@ -143,7 +145,7 @@ namespace Chess.Players
 			MoveGenerator moveGenerator = new MoveGenerator();
 			bool wantsKnightPromotion = Keyboard.current[Key.LeftAlt].isPressed;
 
-			var legalMoves = moveGenerator.GenerateMoves(board);
+			var legalMoves = moveGenerator.GenerateMoves(_board);
 			for (int i = 0; i < legalMoves.Length; i++)
 			{
 				var legalMove = legalMoves[i];
@@ -170,6 +172,7 @@ namespace Chess.Players
 
 			if (moveIsLegal)
 			{
+				lastMoveThinkingTime = _thinkingTime;
 				ChoseMove(chosenMove);
 				currentState = InputState.None;
 			}
@@ -183,14 +186,14 @@ namespace Chess.Players
 		{
 			if (Mouse.current.leftButton.wasPressedThisFrame)
 			{
-				if (boardUI.TryGetCoordFromPosition(mousePos, out selectedPieceSquare))
+				if (_boardUI.TryGetCoordFromPosition(mousePos, out _selectedPieceSquare))
 				{
-					int index = BoardHelper.IndexFromCoord(selectedPieceSquare);
+					int index = BoardHelper.IndexFromCoord(_selectedPieceSquare);
 					// If square contains a piece, select that piece for dragging
-					if (Piece.IsColour(board.Square[index], board.MoveColour))
+					if (Piece.IsColour(_board.Square[index], _board.MoveColour))
 					{
-						boardUI.HighlightLegalMoves(board, selectedPieceSquare);
-						boardUI.HighlightSquare(selectedPieceSquare);
+						_boardUI.HighlightLegalMoves(_board, _selectedPieceSquare);
+						_boardUI.HighlightSquare(_selectedPieceSquare);
 						currentState = InputState.DraggingPiece;
 					}
 				}

@@ -74,9 +74,12 @@ public class KoK_GameManager : MonoBehaviour
         _boardUI.ResetSquareColours();
 
         CreatePlayer(ref _humanPlayer, whitePlayerType);
-        CreatePlayer(ref _aiPlayer, blackPlayerType);       
+        CreatePlayer(ref _aiPlayer, blackPlayerType);
 
-       StartCoroutine(StartUCICheck());
+        _humanPlayer.opponent = _aiPlayer;
+        _aiPlayer.opponent = _humanPlayer;
+
+        StartCoroutine(StartUCICheck());
     }
 
     IEnumerator StartUCICheck()
@@ -128,8 +131,7 @@ public class KoK_GameManager : MonoBehaviour
 
         if (gameResult == GameResult.Result.Playing)
         {
-            _playerToMove = (board.IsWhiteToMove) ? _humanPlayer : _aiPlayer;
-
+            _playerToMove = board.IsWhiteToMove ? _humanPlayer : _aiPlayer;            
             _playerToMove.NotifyTurnToMove();
         }
         else
@@ -193,7 +195,7 @@ public class KoK_GameManager : MonoBehaviour
             _playerToMove.Update();
         }
     }
-    
+
     private void OnUCIok()
     {
         Debug.Log("UCI is ready");
@@ -205,7 +207,7 @@ public class KoK_GameManager : MonoBehaviour
     {
         Debug.Log("MadChess is ready");
 
-        if(loadCustomPosition)
+        if (loadCustomPosition)
             _madChessController.SendCommand("position fen " + customPosition);
 
         NotifyPlayerToMove();

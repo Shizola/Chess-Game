@@ -25,10 +25,6 @@ public class MadChessController : MonoBehaviour
     public int centipawnScore;
     public int currentOpponentSkillElo;
 
-    // private WaitForSeconds _waitOneSecond = new WaitForSeconds(1f);
-    public float moveTimer = 0f;
-    public bool isThinking = false;
-
     void Start()
     {
         // Get the full path to the .exe file in the StreamingAssets folder
@@ -114,10 +110,6 @@ public class MadChessController : MonoBehaviour
                 string[] bestMoveSplit = data.Split(' ');
                 string bestMove = bestMoveSplit[1];
                 onSearchComplete?.Invoke(bestMove);
-                isThinking = false;
-                UnityEngine.Debug.Log(moveTimer);
-                
-
             }
             else if (data.StartsWith("info depth"))
             {
@@ -158,6 +150,7 @@ public class MadChessController : MonoBehaviour
         SendCommand("debug on");
         SendCommand("setoption name uci_limitstrength value true");
         SendCommand("setoption name uci_elo value " + currentOpponentSkillElo.ToString());
+        
         SendCommand("ucinewgame");
     }
 
@@ -182,38 +175,11 @@ public class MadChessController : MonoBehaviour
         }
     }
 
-    public void SendPosition(string fen, float moveTime)
+    public void SendPosition(string fen)
     {
         SendCommand("position fen " + fen);
-
-       SendCommand("go nodes 1");
-
-      //  SendCommand("stop");
-      moveTimer = 0f;
-      isThinking = true;
-      StartCoroutine(TimeMove());
-
+        SendCommand("go nodes 1");
     }
-
-    private void Update()
-    {
-        // use unity new input system to detect spacebar press
-        if (Keyboard.current.spaceKey.wasPressedThisFrame)
-        {
-            
-               UnityEngine.Debug.Log("??");
-        }
-    }
-
-    private IEnumerator TimeMove()
-    {
-        while(isThinking)
-        {
-            moveTimer += Time.deltaTime;
-            yield return null;
-        }
-    }
-
 
     //temp
     // Method to extract and display the evaluation score

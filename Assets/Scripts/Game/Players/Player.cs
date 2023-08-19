@@ -9,10 +9,11 @@ namespace Chess.Players
 	{
 		public event System.Action<Move> onMoveChosen;
 
+		public Player opponent;
+		protected float _thinkingTime;
+		public float lastMoveThinkingTime;
 		public abstract void Update();
-
 		public abstract void NotifyTurnToMove();
-
 		protected virtual void ChoseMove(Move move)
 		{
 			onMoveChosen?.Invoke(move);
