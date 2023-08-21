@@ -5,8 +5,6 @@ public enum BattleStyle
     Cautious,
     Aggressive,
     Balanced,
-    Tactical,
-    Defensive
 }
 
 public enum SkillRange

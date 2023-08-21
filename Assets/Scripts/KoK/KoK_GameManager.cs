@@ -102,7 +102,7 @@ public class KoK_GameManager : MonoBehaviour
         }
         else
         {
-            player = new KoK_AI_Player(board, _madChessController);
+            player = new KoK_AI_Player(board, _madChessController, opponentKingAttributes);
         }
         player.onMoveChosen += OnMoveChosen;
     }
