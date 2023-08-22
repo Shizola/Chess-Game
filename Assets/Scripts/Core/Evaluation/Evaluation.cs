@@ -112,8 +112,9 @@
 			return 0;
 		}
 
-		int CountMaterial(int colourIndex)
+		public int CountMaterial(int colourIndex, Board board)
 		{
+			this.board = board;
 			int material = 0;
 			material += board.pawns[colourIndex].Count * PawnValue;
 			material += board.knights[colourIndex].Count * KnightValue;

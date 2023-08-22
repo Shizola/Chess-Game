@@ -178,7 +178,7 @@ public class MadChessController : MonoBehaviour
     public void SendPosition(string fen)
     {
         SendCommand("position fen " + fen);
-        SendCommand("go nodes 1");
+        SendCommand("go nodes 10");
     }
 
     //temp

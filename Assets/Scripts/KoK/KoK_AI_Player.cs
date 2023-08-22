@@ -20,14 +20,19 @@ namespace Chess.Players
         private float _thinkingTimer;
         private bool _needToUpdateThinkingTime;
 
-        public KoK_AI_Player(Board board, MadChessController madChessController, KoK_WorldKingAttributes attributes)
+        private int _materialAfterLastMove;
+        private bool _winningBackMaterial;
+
+        public KoK_AI_Player(Board board, MadChessController madChessController, KoK_WorldKingAttributes attributes, KoK_GameManager gameManager)
         {
             _board = board;
             _madChessController = madChessController;
             _madChessController.onSearchComplete += OnSearchComplete;
+            _gameManager = gameManager;
             _kok_kingAttributes = attributes;
-            _currentThinkingTimes = new KoK_AI_Player_CurrentThinkingTimes();
+            _currentThinkingTimes = new KoK_AI_Player_CurrentThinkingTimes();            
             RandomiseThinkingTime();
+            _materialAfterLastMove = _gameManager.blackMaterial;
         }
 
         public override void NotifyTurnToMove()
@@ -56,13 +61,21 @@ namespace Chess.Players
                 _moveFound = false;
                 ChoseMove(_move);
                 _needToUpdateThinkingTime = true;
+                _materialAfterLastMove = _gameManager.blackMaterial;
             }
         }
 
         void OnSearchComplete(string moveString)
         {
-            _thinkingTime = 0f;
+            // get move ready
+            Move move = MoveUtility.MoveFromName(moveString, _board);
+            this._move = move;
+            _moveFound = true;
 
+
+            // get thinking time
+
+            _thinkingTime = 0f;
             _thinkingTime = GetSimulatedThinkingTime();
 
             // Update AI's last thinking time
@@ -71,10 +84,8 @@ namespace Chess.Players
             Debug.Log("Adjusted Thinking Time: " + _thinkingTime);
             Debug.Log("MadChess search complete, move is: " + moveString);
 
-            Move move = MoveUtility.MoveFromName(moveString, _board);
-            this._move = move;
-            _moveFound = true;
         }
+        
 
         private float GetSimulatedThinkingTime()
         {
@@ -83,51 +94,76 @@ namespace Chess.Players
             int centipawnScore = _madChessController.centipawnScore;
             float playerLastThinkingTime = opponent.lastMoveThinkingTime;
 
-            if (centipawnScore <= -1000) // Extremely worse position
+            if (centipawnScore <= -1000) 
             {
-                adjustedThinkingTime = Mathf.Clamp(_currentThinkingTimes.ExtremelyWorse, 1f, 10f);
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime +_currentThinkingTimes.ExtremelyWorse, 1f, 10f);
                 Debug.Log("Extremely Worse Position");
             }
-            else if (centipawnScore < -500) // Much worse position
+            else if (centipawnScore < -500) 
             {
-                adjustedThinkingTime = Mathf.Clamp(_currentThinkingTimes.MuchWorse, 1f, 10f);
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.MuchWorse, 1f, 10f);
                 Debug.Log("Much Worse Position");
             }
-            else if (centipawnScore < -350) // Worse position
+            else if (centipawnScore < -350)
             {
-                adjustedThinkingTime = Mathf.Clamp( _currentThinkingTimes.Worse, 1f, 10f);
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.Worse, 1f, 10f);
                 Debug.Log("Worse Position");
             }
-            else if (centipawnScore < -150) // Slightly worse position
+            else if (centipawnScore < -150)
             {
-                adjustedThinkingTime = Mathf.Clamp( _currentThinkingTimes.SlightlyWorse, 1f, 10f);
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.SlightlyWorse, 1f, 10f);
                 Debug.Log("Slightly Worse Position");
             }
-            else if (centipawnScore < 50 && centipawnScore > -50) // Neutral position
+            else if (centipawnScore < 50 && centipawnScore > -50) 
             {
-                adjustedThinkingTime = Mathf.Clamp( _currentThinkingTimes.Neutral, 1f, 10f);
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.Neutral, 1f, 10f);
                 Debug.Log("Neutral Position");
             }
-            else if (centipawnScore <= 150) // Better position
+            else if (centipawnScore >= 50 && centipawnScore < 150) 
             {
-                adjustedThinkingTime = Mathf.Clamp( _currentThinkingTimes.Better, 1f, 10f);
-                Debug.Log("Slightly Position");
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.Better, 1f, 10f);
+                Debug.Log("Slightly Better Position");
             }
-            else if (centipawnScore <= 350) // Much better position
+            else if (centipawnScore >= 150 && centipawnScore < 350) 
             {
-                adjustedThinkingTime = Mathf.Clamp(_currentThinkingTimes.SlightlyBetter, 1f, 10f);
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.SlightlyBetter, 1f, 10f);
                 Debug.Log("Better Position");
-            }
-            else if (centipawnScore <= 1000) // Much better position
+            }  
+            else if (centipawnScore >= 350 && centipawnScore < 500)
             {
-                adjustedThinkingTime = Mathf.Clamp(_currentThinkingTimes.MuchBetter, 1f, 10f);
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.SlightlyBetter, 1f, 10f);
                 Debug.Log("Much Better Position");
             }
-            else // Extremely better position
+            else if (centipawnScore >= 500 && centipawnScore < 1000) 
             {
-                adjustedThinkingTime = Mathf.Clamp( _currentThinkingTimes.ExtremelyBetter, 1f, 10f);
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.MuchBetter, 1f, 10f);
+                Debug.Log("Much Better Position");
+            }
+            else
+            {
+                adjustedThinkingTime = Mathf.Clamp(playerLastThinkingTime + _currentThinkingTimes.ExtremelyBetter, 1f, 10f);
                 Debug.Log("Extremely Better Position");
             }
+
+            //has lost material since last move
+            if (_materialAfterLastMove > _gameManager.blackMaterial)
+            {
+                _winningBackMaterial = true;
+
+                // simulate the upcoming move before it's made to see if it wins back material
+                Board tempBoard = new Board();
+                tempBoard.LoadPosition(FenUtility.CurrentFen(_board));
+                tempBoard.MakeMove(_move);
+                int tempMaterial = _gameManager.evaluation.CountMaterial(1, tempBoard);
+
+                if (tempMaterial > _materialAfterLastMove)
+                {
+                    // if it does win back material, reduce thinking time
+                    adjustedThinkingTime = Mathf.Clamp(adjustedThinkingTime / 2f, 1f, 10f);
+                    Debug.Log("Winning back material");
+                }
+            }
+           
 
             return adjustedThinkingTime;
         }

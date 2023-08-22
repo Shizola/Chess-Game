@@ -7,6 +7,7 @@ using Chess.Players;
 using Chess.Game;
 using System;
 using UnityEngine.InputSystem;
+using NUnit.Framework.Internal;
 
 public class KoK_GameManager : MonoBehaviour
 {
@@ -33,8 +34,13 @@ public class KoK_GameManager : MonoBehaviour
     public event System.Action onPositionLoaded;
     public event System.Action<Move> onMoveMade;
 
+    public int whiteMaterial;
+    public int blackMaterial;
+
     // Internal stuff
     GameResult.Result gameResult;
+    public Evaluation evaluation;
+
 
     [Header("Debug")]
     public string currentFen;
@@ -46,6 +52,7 @@ public class KoK_GameManager : MonoBehaviour
 
         _boardUI = FindFirstObjectByType<BoardUI>();
         board = new Board();
+        evaluation = new Evaluation();
 
         _madChessController.onUCIok += OnUCIok;
         _madChessController.onIsReady += OnMadChessIsReady;
@@ -79,6 +86,9 @@ public class KoK_GameManager : MonoBehaviour
         _humanPlayer.opponent = _aiPlayer;
         _aiPlayer.opponent = _humanPlayer;
 
+        whiteMaterial = evaluation.CountMaterial(0, board);
+        blackMaterial = evaluation.CountMaterial(1, board);
+
         StartCoroutine(StartUCICheck());
     }
 
@@ -98,11 +108,11 @@ public class KoK_GameManager : MonoBehaviour
 
         if (playerType == PlayerType.Human)
         {
-            player = new HumanPlayer(board);
+            player = new KoK_HumanPlayer(board, this);
         }
         else
         {
-            player = new KoK_AI_Player(board, _madChessController, opponentKingAttributes);
+            player = new KoK_AI_Player(board, _madChessController, opponentKingAttributes, this);
         }
         player.onMoveChosen += OnMoveChosen;
     }
@@ -122,6 +132,8 @@ public class KoK_GameManager : MonoBehaviour
 
         _boardUI.UpdatePosition(board, move, true);
 
+        whiteMaterial = evaluation.CountMaterial(0, board);
+        blackMaterial = evaluation.CountMaterial(1, board);
         NotifyPlayerToMove();
     }
 
@@ -131,7 +143,7 @@ public class KoK_GameManager : MonoBehaviour
 
         if (gameResult == GameResult.Result.Playing)
         {
-            _playerToMove = board.IsWhiteToMove ? _humanPlayer : _aiPlayer;            
+            _playerToMove = board.IsWhiteToMove ? _humanPlayer : _aiPlayer;
             _playerToMove.NotifyTurnToMove();
         }
         else

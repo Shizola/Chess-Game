@@ -9,6 +9,7 @@ namespace Chess.Players
 	{
 		public event System.Action<Move> onMoveChosen;
 
+		protected KoK_GameManager _gameManager;
 		public Player opponent;
 		protected float _thinkingTime;
 		public float lastMoveThinkingTime;
