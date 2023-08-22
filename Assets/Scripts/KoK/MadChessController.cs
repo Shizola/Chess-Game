@@ -147,7 +147,7 @@ public class MadChessController : MonoBehaviour
 
         UnityEngine.Debug.Log(currentOpponentSkillElo.ToString());
 
-        SendCommand("debug on");
+       // SendCommand("debug on");
         SendCommand("setoption name uci_limitstrength value true");
         SendCommand("setoption name uci_elo value " + currentOpponentSkillElo.ToString());
         

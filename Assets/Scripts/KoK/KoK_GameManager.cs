@@ -40,6 +40,7 @@ public class KoK_GameManager : MonoBehaviour
     // Internal stuff
     GameResult.Result gameResult;
     public Evaluation evaluation;
+    public int moveCount;
 
 
     [Header("Debug")]
@@ -122,7 +123,7 @@ public class KoK_GameManager : MonoBehaviour
         //PlayMoveSound(move);
 
         // bool animateMove = _playerToMove is AIPlayer;
-
+        moveCount++;
         board.MakeMove(move);
 
         // searchBoard.MakeMove(move);
