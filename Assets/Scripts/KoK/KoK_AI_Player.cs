@@ -14,23 +14,27 @@ namespace Chess.Players
         private KoK_WorldKingAttributes _kok_kingAttributes;
         private Board _board;
         private Move _move;
+        private MoveGenerator _moveGenerator;
         private bool _moveFound;
 
         private KoK_AI_Player_CurrentThinkingTimes _currentThinkingTimes;
         private float _thinkingTimer;
-        private bool _needToUpdateThinkingTime;
+        private float _randomBlunderChance;
+        private bool _needToUpdateRandomValues;
 
         private int _materialAfterLastMove;
 
         public KoK_AI_Player(Board board, MadChessController madChessController, KoK_WorldKingAttributes attributes, KoK_GameManager gameManager)
         {
-            _board = board;
             _madChessController = madChessController;
             _madChessController.onSearchComplete += OnSearchComplete;
+            _board = board;
+            _moveGenerator = new MoveGenerator();
             _gameManager = gameManager;
             _kok_kingAttributes = attributes;
             _currentThinkingTimes = new KoK_AI_Player_CurrentThinkingTimes();
             RandomiseThinkingTime();
+            RandomiseBlunderChance();
             _materialAfterLastMove = _gameManager.blackMaterial;
         }
 
@@ -42,10 +46,11 @@ namespace Chess.Players
 
         public override void Update()
         {
-            if (_needToUpdateThinkingTime)
+            if (_needToUpdateRandomValues)
             {
-                _needToUpdateThinkingTime = false;
+                _needToUpdateRandomValues = false;
                 RandomiseThinkingTime();
+                RandomiseBlunderChance();
             }
 
             if (_moveFound)
@@ -56,10 +61,12 @@ namespace Chess.Players
                     return;
                 }
 
+                CheckForBlunder();
+
                 _thinkingTimer = 0f;
                 _moveFound = false;
                 ChoseMove(_move);
-                _needToUpdateThinkingTime = true;
+                _needToUpdateRandomValues = true;
                 _materialAfterLastMove = _gameManager.blackMaterial;
             }
         }
@@ -139,9 +146,6 @@ namespace Chess.Players
                 Debug.Log("Extremely Better Position");
             }
 
-            Debug.Log(_materialAfterLastMove + "materiallast move  " + _gameManager.blackMaterial + "material now");
-
-
             //has lost material since last move
             if (_materialAfterLastMove > _gameManager.blackMaterial)
             {
@@ -193,6 +197,29 @@ namespace Chess.Players
                     break;
                 default:
                     break;
+            }
+        }
+
+        private void RandomiseBlunderChance()
+        {
+            _randomBlunderChance = Random.Range(0, 100);
+        }
+
+        private void CheckForBlunder()
+        {
+            if (_kok_kingAttributes.blunderChance >= _randomBlunderChance)
+            {
+                Debug.Log("AI has blundered.");
+
+                var moves = _moveGenerator.GenerateMoves(_board);
+                if (moves.Length > 0)
+                {
+                    _move = moves[new System.Random().Next(moves.Length)];
+                }
+                else
+                {
+                    Debug.LogWarning("No moves available.");
+                }
             }
         }
     }
