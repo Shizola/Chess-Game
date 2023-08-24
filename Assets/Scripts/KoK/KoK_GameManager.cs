@@ -16,16 +16,12 @@ public class KoK_GameManager : MonoBehaviour
     private BoardUI _boardUI;
     public Board board { get; private set; }
 
-    [Header("Start Position")]
-    public bool loadCustomPosition;
-    public string customPosition = "1rbq1r1k/2pp2pp/p1n3p1/2b1p3/R3P3/1BP2N2/1P3PPP/1NBQ1RK1 w - - 0 1";
-
     public enum PlayerType { Human, AI }
     [Header("Players")]
     public PlayerType whitePlayerType = PlayerType.Human;
     public PlayerType blackPlayerType = PlayerType.AI;
 
-    public KoK_WorldKingAttributes opponentKingAttributes;
+    public KoK_BattleSequence battleSequence;
 
     private Player _humanPlayer;
     private Player _aiPlayer;
@@ -58,24 +54,13 @@ public class KoK_GameManager : MonoBehaviour
         _madChessController.onUCIok += OnUCIok;
         _madChessController.onIsReady += OnMadChessIsReady;
 
-        NewGame(whitePlayerType, blackPlayerType);
+        NewGame(whitePlayerType, blackPlayerType, battleSequence.battles[0].startingFenPosition);
     }
 
 
-    private void NewGame(PlayerType whitePlayerType, PlayerType blackPlayerType)
+    private void NewGame(PlayerType whitePlayerType, PlayerType blackPlayerType, string fenPosition)
     {
-        if (loadCustomPosition)
-        {
-            currentFen = customPosition;
-            board.LoadPosition(customPosition);
-            // searchBoard.LoadPosition(customPosition);
-        }
-        else
-        {
-            currentFen = FenUtility.StartPositionFEN;
-            board.LoadStartPosition();
-            //searchBoard.LoadStartPosition();
-        }
+        board.LoadPosition(fenPosition);
 
         onPositionLoaded?.Invoke();
         _boardUI.UpdatePosition(board);
@@ -113,7 +98,7 @@ public class KoK_GameManager : MonoBehaviour
         }
         else
         {
-            player = new KoK_AI_Player(board, _madChessController, opponentKingAttributes, this);
+            player = new KoK_AI_Player(board, _madChessController, battleSequence.king, this);
         }
         player.onMoveChosen += OnMoveChosen;
     }
@@ -156,7 +141,6 @@ public class KoK_GameManager : MonoBehaviour
     private void GameOver()
     {
         Debug.Log("Game Over " + gameResult);
-
     }
 
     // Update is called once per frame
@@ -212,7 +196,7 @@ public class KoK_GameManager : MonoBehaviour
     private void OnUCIok()
     {
         Debug.Log("UCI is ready");
-        _madChessController.NewGame(opponentKingAttributes.skillElo);
+        _madChessController.NewGame(battleSequence.king.baseSkillElo);
         _madChessController.CheckIsReady();
     }
 
@@ -220,8 +204,7 @@ public class KoK_GameManager : MonoBehaviour
     {
         Debug.Log("MadChess is ready");
 
-        if (loadCustomPosition)
-            _madChessController.SendCommand("position fen " + customPosition);
+        _madChessController.SendCommand("position fen " + battleSequence.battles[0].startingFenPosition);
 
         NotifyPlayerToMove();
         gameResult = GameResult.Result.Playing;

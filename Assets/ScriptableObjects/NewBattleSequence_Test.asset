@@ -9,14 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b5b29607ff61b34fa2928262ecb110a, type: 3}
-  m_Name: TestKing
+  m_Script: {fileID: 11500000, guid: e22716c6b78a6e24dba615823eaa90e2, type: 3}
+  m_Name: NewBattleSequence_Test
   m_EditorClassIdentifier: 
-  kingName: Tester
-  gold: 100
-  numberOfTroops: 64
-  kingdomName: 
-  battleStyle: 0
-  skillElo: 600
-  blunderChance: 30
-  hasAllegiance: 0
+  king: {fileID: 11400000, guid: 301686f339828214d9c10d07f1a425f2, type: 2}
+  battles:
+  - startingFenPosition: rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
+    hideKing: 0

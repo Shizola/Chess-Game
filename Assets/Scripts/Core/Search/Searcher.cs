@@ -70,7 +70,7 @@
 			// Run a depth 1 search so that JIT doesn't run during actual search (and mess up timing stats in editor)
 			Search(1, 0, negativeInfinity, positiveInfinity);
 
-			EditorApplication.playModeStateChanged += LogPlayModeState;
+			//EditorApplication.playModeStateChanged += LogPlayModeState;
 		}
 
 				
@@ -527,13 +527,13 @@
 			public int maxExtentionReachedInSearch;
 		}
 
-		private void LogPlayModeState(PlayModeStateChange state)
-		{
-			if(state == PlayModeStateChange.ExitingPlayMode)
-			{
-				UnityEngine.Debug.Log("exiting play mode, disposing searcher");
-				//EndSearch();
-			}
-		}		
+		// private void LogPlayModeState(PlayModeStateChange state)
+		// {
+		// 	if(state == PlayModeStateChange.ExitingPlayMode)
+		// 	{
+		// 		UnityEngine.Debug.Log("exiting play mode, disposing searcher");
+		// 		//EndSearch();
+		// 	}
+		// }		
 	}
 }

@@ -14,4 +14,23 @@ public enum SkillRange
     High = 1800
 }
 
-// You can add more enums here
+public enum PieceMoral
+{
+    Low,
+    Medium,
+    High
+}
+
+public enum PieceFearLevel
+{
+    Low,
+    Medium,
+    High
+}
+
+public enum PieceLoyalty
+{
+    Low,
+    Medium,
+    High
+}

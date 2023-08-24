@@ -1132,12 +1132,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b440342dfe003f0458253ebd87e719ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loadCustomPosition: 0
-  customPosition: rnbqkbnr/pppppppp/8/3p4/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
   whitePlayerType: 0
   blackPlayerType: 1
-  opponentKingAttributes: {fileID: 11400000, guid: fd12a6b40280419418dab4cfd6bbe8c7,
-    type: 2}
+  battleSequence: {fileID: 11400000, guid: 4841188833202db4caec41faccaebbb2, type: 2}
+  whiteMaterial: 0
+  blackMaterial: 0
+  moveCount: 0
   currentFen: 
 --- !u!4 &1688005262
 Transform:

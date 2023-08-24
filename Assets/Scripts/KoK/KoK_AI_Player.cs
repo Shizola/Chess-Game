@@ -11,12 +11,11 @@ namespace Chess.Players
     public class KoK_AI_Player : Player
     {
         private MadChessController _madChessController;
-        private KoK_WorldKingAttributes _kok_kingAttributes;
+        private KoK_PieceData_King _kok_pieceData_king;
         private Board _board;
         private Move _move;
         private MoveGenerator _moveGenerator;
         private bool _moveFound;
-
         private KoK_AI_Player_CurrentThinkingTimes _currentThinkingTimes;
         private float _thinkingTimer;
         private float _randomBlunderChance;
@@ -24,14 +23,14 @@ namespace Chess.Players
 
         private int _materialAfterLastMove;
 
-        public KoK_AI_Player(Board board, MadChessController madChessController, KoK_WorldKingAttributes attributes, KoK_GameManager gameManager)
+        public KoK_AI_Player(Board board, MadChessController madChessController, KoK_PieceData_King king, KoK_GameManager gameManager)
         {
             _madChessController = madChessController;
             _madChessController.onSearchComplete += OnSearchComplete;
             _board = board;
             _moveGenerator = new MoveGenerator();
             _gameManager = gameManager;
-            _kok_kingAttributes = attributes;
+            _kok_pieceData_king = king;
             _currentThinkingTimes = new KoK_AI_Player_CurrentThinkingTimes();
             RandomiseThinkingTime();
             RandomiseBlunderChance();
@@ -180,7 +179,7 @@ namespace Chess.Players
 
         private void RandomiseThinkingTime()
         {
-            switch (_kok_kingAttributes.battleStyle)
+            switch (_kok_pieceData_king.battleStyle)
             {
                 case BattleStyle.Aggressive:
                 case BattleStyle.Balanced:
@@ -207,7 +206,7 @@ namespace Chess.Players
 
         private void CheckForBlunder()
         {
-            if (_kok_kingAttributes.blunderChance >= _randomBlunderChance)
+            if (_kok_pieceData_king.blunderChance >= _randomBlunderChance)
             {
                 Debug.Log("AI has blundered.");
 
