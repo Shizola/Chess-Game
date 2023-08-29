@@ -13,5 +13,5 @@ public class KoK_BattleSequence : ScriptableObject
 public class KoK_Battle
 {
     public string startingFenPosition;
-    public bool hideKing;
+    public bool hideTheKingMode;
 }

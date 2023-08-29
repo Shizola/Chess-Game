@@ -521,11 +521,12 @@ namespace Chess.Core
 			currentGameState = new GameState();
 			plyCount = 0;
 
-			knights = new PieceList[] { new PieceList(10), new PieceList(10) };
-			pawns = new PieceList[] { new PieceList(8), new PieceList(8) };
-			rooks = new PieceList[] { new PieceList(10), new PieceList(10) };
-			bishops = new PieceList[] { new PieceList(10), new PieceList(10) };
-			queens = new PieceList[] { new PieceList(9), new PieceList(9) };
+			// * These values have been increased from their orginal values in order to support more pieces than standard chess
+			knights = new PieceList[] { new PieceList(36), new PieceList(36) };
+			pawns = new PieceList[] { new PieceList(36), new PieceList(36) };
+			rooks = new PieceList[] { new PieceList(36), new PieceList(36) };
+			bishops = new PieceList[] { new PieceList(36), new PieceList(36) };
+			queens = new PieceList[] { new PieceList(36), new PieceList(36) };
 
 			pieceLists = new PieceList[Piece.MaxPieceIndex + 1];
 			pieceLists[Piece.WhitePawn] = pawns[WhiteIndex];

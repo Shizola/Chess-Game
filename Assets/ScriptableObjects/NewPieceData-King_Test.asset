@@ -14,3 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pieceName: 
   pieceMoral: 0
+  pieceFearLevel: 0
+  pieceLoyalty: 0
+  baseSkillElo: 600
+  blunderChance: 80
+  battleStyle: 0
+  hasAllegiance: 0

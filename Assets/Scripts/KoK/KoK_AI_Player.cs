@@ -165,15 +165,19 @@ namespace Chess.Players
 
                 if (tempMaterialDifference < 0 || tempMaterialDifference < currentMaterialDifference)
                 {
-                    Debug.Log("AI has reduced the material difference.");
+                   // Debug.Log("AI has reduced the material difference.");
                     // if it does win back material, reduce thinking time
                     adjustedThinkingTime = _currentThinkingTimes.ExtremelyBetter;
                 }
                 else
                 {
-                    Debug.Log("AI's material situation has not changed significantly.");
+                  //  Debug.Log("AI's material situation has not changed significantly.");
                 }
             }
+
+            if (_debug_disableThinkingTime)
+                adjustedThinkingTime = 0f;
+
             return adjustedThinkingTime;
         }
 
@@ -219,6 +223,20 @@ namespace Chess.Players
                 {
                     Debug.LogWarning("No moves available.");
                 }
+            }
+        }
+
+
+        private bool _debug_disableThinkingTime;
+        public bool Debug_DisableThinkingTime
+        {
+            get { return _debug_disableThinkingTime; }
+            set
+            {
+                if (Debug.isDebugBuild)
+                    _debug_disableThinkingTime = value;
+                else
+                    Debug.LogWarning("Debug_DisableThinkingTime is only available in debug builds.");
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using Chess.Core;
+using System;
 
 namespace Chess.UI
 {
@@ -10,6 +11,13 @@ namespace Chess.UI
 		public BoardTheme boardTheme;
 		public bool showLegalMoves;
 		public bool whiteIsBottom = true;
+
+		private bool _hideTheKing = false;
+		public bool HideTheKingMode
+		{
+			get { return _hideTheKing; }
+			set { _hideTheKing = value; moveGenerator.HideTheKingMode = value; }
+		}
 
 		MeshRenderer[,] squareRenderers;
 		SpriteRenderer[,] squarePieceRenderers;
@@ -53,7 +61,6 @@ namespace Chess.UI
 				}
 			}
 		}
-
 
 		public void HighlightLegalMoves(Board board, Coord fromSquare)
 		{
@@ -239,6 +246,5 @@ namespace Chess.UI
 		{
 			return PositionFromCoord(coord.fileIndex, coord.rankIndex, depth);
 		}
-
 	}
 }

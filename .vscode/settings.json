@@ -52,5 +52,5 @@
         "temp/":true,
         "Temp/":true
     },
-    "dotnet.defaultSolution": "Chess-Game.sln"
+    "dotnet.defaultSolution": "The-King-of-Kings.sln"
 }

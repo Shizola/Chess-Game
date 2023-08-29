@@ -171,6 +171,21 @@ namespace Chess.Players
 				}
 			}
 
+			if(_gameManager.battleSequence.battles[_gameManager.currentBattleIndex].hideTheKingMode)
+			{
+				if (moveIsLegal)
+				{
+					
+					if(chosenMove.TargetSquare == _board.KingSquare[1])
+					{
+						moveIsLegal = false;
+						Debug.Log ("now we need to move the king");
+					}
+					
+				}
+			}
+
+
 			if (moveIsLegal)
 			{
 				lastMoveThinkingTime = _thinkingTime;

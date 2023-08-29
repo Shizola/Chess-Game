@@ -1,7 +1,8 @@
 namespace Chess.Core
 {
 	using System;
-	using static PrecomputedMoveData;
+    using System.Diagnostics;
+    using static PrecomputedMoveData;
 
 	public class MoveGenerator
 	{
@@ -10,6 +11,14 @@ namespace Chess.Core
 		public enum PromotionMode { All, QueenOnly, QueenAndKnight }
 
 		public PromotionMode promotionsToGenerate = PromotionMode.All;
+
+		private bool _hideTheKing = false;
+		public bool HideTheKingMode
+		{
+			get { return _hideTheKing; }
+			set { _hideTheKing = value; }
+		}
+		
 
 		// ---- Instance variables ----
 		bool isWhiteToMove;
@@ -229,7 +238,10 @@ namespace Chess.Core
 
 			ulong promotionRankMask = board.IsWhiteToMove ? BitBoardUtility.Rank8 : BitBoardUtility.Rank1;
 
+
+			//find the king
 			ulong singlePush = (BitBoardUtility.Shift(pawns, pushOffset)) & emptySquares;
+			ulong singlePushHideKing = (BitBoardUtility.Shift(pawns, pushOffset));
 
 			ulong pushPromotions = singlePush & promotionRankMask & checkRayBitmask;
 
@@ -255,11 +267,28 @@ namespace Chess.Core
 				{
 					int targetSquare = BitBoardUtility.PopLSB(ref singlePushNoPromotions);
 					int startSquare = targetSquare - pushOffset;
+
 					if (!IsPinned(startSquare) || alignMask[startSquare, friendlyKingSquare] == alignMask[targetSquare, friendlyKingSquare])
 					{
 						moves[currMoveIndex++] = new Move(startSquare, targetSquare);
+
 					}
 				}
+
+				int opponentKingSquare = board.KingSquare[1];
+
+				if (BitBoardUtility.ContainsSquare(singlePushHideKing, opponentKingSquare))
+				{
+
+					int targetSquare = BitBoardUtility.PopLSB(ref singlePushHideKing);
+					int startSquare = targetSquare - pushOffset;
+
+					moves[currMoveIndex++] = new Move(startSquare, targetSquare);
+
+					// The pawn's single push is blocked by the opponent's King
+					UnityEngine.Debug.Log("The pawn's single push is blocked by the opponent's King");
+				}
+
 
 				// Generate double pawn pushes
 				ulong doublePushTargetRankMask = board.IsWhiteToMove ? BitBoardUtility.Rank4 : BitBoardUtility.Rank5;

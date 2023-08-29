@@ -13,23 +13,22 @@ public class MadChessController : MonoBehaviour
     private StreamWriter engineStreamWriter;
     private StreamReader engineStreamReader;
     private Thread readThread;
-
     public string madChessExePath; // Set this in the Inspector to the name of your .exe file
-
     public event Action onUCIok;
     public event Action onIsReady;
-
     public Action<string> onSearchComplete;
-
     public int centipawnScore;
     public int currentOpponentSkillElo;
 
+    [Header("Debug")]
+    public bool loggingEnabled;
     void Start()
     {
         // Get the full path to the .exe file in the StreamingAssets folder
         string exeFilePath = System.IO.Path.Combine(Application.streamingAssetsPath, madChessExePath);
 
-        UnityEngine.Debug.Log(madChessExePath);
+        if (loggingEnabled)
+            UnityEngine.Debug.Log(madChessExePath);
 
         // Check if the process with the given exeFileName is already running
         Process[] processes = Process.GetProcessesByName(System.IO.Path.GetFileNameWithoutExtension(madChessExePath));
@@ -82,7 +81,8 @@ public class MadChessController : MonoBehaviour
 
             if (data != "")
             {
-                UnityEngine.Debug.Log("Engine Response: " + data);
+                if (loggingEnabled)
+                    UnityEngine.Debug.Log("Engine Response: " + data);
             }
 
             // For example, the engine will respond with "uciok" to the "uci" command
@@ -137,19 +137,19 @@ public class MadChessController : MonoBehaviour
     {
         // Send the 'uci' command to identify the engine
         SendCommand("uci");
-        UnityEngine.Debug.Log("check uci");
+        if (loggingEnabled)
+            UnityEngine.Debug.Log("check uci");
     }
 
     public void NewGame(int skillElo)
     {
         currentOpponentSkillElo = skillElo;
 
-        UnityEngine.Debug.Log(currentOpponentSkillElo.ToString());
+        if (loggingEnabled)
+            SendCommand("debug on");
 
-       // SendCommand("debug on");
         SendCommand("setoption name uci_limitstrength value true");
         SendCommand("setoption name uci_elo value " + currentOpponentSkillElo.ToString());
-        
         SendCommand("ucinewgame");
     }
 
@@ -177,7 +177,7 @@ public class MadChessController : MonoBehaviour
     public void SendPosition(string fen)
     {
         SendCommand("position fen " + fen);
-        SendCommand("go nodes 10");
+        SendCommand("go nodes 1000");
     }
 
     //temp
